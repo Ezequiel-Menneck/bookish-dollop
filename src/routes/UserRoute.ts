@@ -5,7 +5,7 @@ import {
   addUser,
   deleteUser,
   updateUser,
-} from './../controller/UserService';
+} from './../controller/UserController';
 const router = express.Router();
 
 router.get('/users', getAllUsers);
