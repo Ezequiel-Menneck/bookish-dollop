@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidV4 } from "uuid";
 
-type user = {
+type User = {
   name: string;
   age: number;
   id: string;
 };
 
-let users: user[] = [
+let users: User[] = [
   {
     name: "Rbson",
     age: 10,
