@@ -1,12 +1,34 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from 'express';
+import { prismaClient } from '../database/prismaCliente';
 
-export const handleGetBook = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  res.send({
-    success: true,
-    message: "Calendar",
+type CreateSchedule = {
+  client: string;
+  gender: string;
+  date: string;
+  time: string;
+  service: any;
+};
+
+export const addSchedule = async (req: Request, res: Response) => {
+  const { client, gender, date, time }: CreateSchedule = req.body;
+  const { service_name, price } = req.body.service;
+  const schedule = await prismaClient.schedules.create({
+    data: {
+      client,
+      gender,
+      date,
+      time,
+      service: {
+        create: [
+          {
+            service_name,
+            price,
+          },
+        ],
+      },
+    },
   });
+
+  console.log(schedule);
+  return res.json(`Deu boa + ${schedule}`);
 };

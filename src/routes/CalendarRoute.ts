@@ -1,8 +1,8 @@
-import express from 'express'
-import { handleGetBook } from '../services/CalendarService'
+import express from 'express';
+import { addSchedule } from '../controller/CalendarController';
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/calendar', handleGetBook)
+router.post('/calendar', addSchedule);
 
-export default router
+export default router;
