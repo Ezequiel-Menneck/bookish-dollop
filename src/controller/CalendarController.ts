@@ -6,12 +6,16 @@ type CreateSchedule = {
   gender: string;
   date: string;
   time: string;
-  service: any;
+};
+
+type ServiceTypes = {
+  service_name: string;
+  price: number;
 };
 
 export const addSchedule = async (req: Request, res: Response) => {
   const { client, gender, date, time }: CreateSchedule = req.body;
-  const { service_name, price } = req.body.service;
+  const { service_name, price }: ServiceTypes = req.body.service.create;
   const schedule = await prismaClient.schedules.create({
     data: {
       client,
@@ -19,16 +23,13 @@ export const addSchedule = async (req: Request, res: Response) => {
       date,
       time,
       service: {
-        create: [
-          {
-            service_name,
-            price,
-          },
-        ],
+        create: {
+          service_name,
+          price,
+        },
       },
     },
   });
 
-  console.log(schedule);
-  return res.json(`Deu boa + ${schedule}`);
+  return res.status(201).json(schedule);
 };
