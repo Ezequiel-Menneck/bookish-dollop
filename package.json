@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts"
+    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --exit-child src/server.ts"
   },
   "name": "express-typescript",
   "version": "1.0.0",
