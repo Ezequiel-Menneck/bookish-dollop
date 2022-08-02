@@ -69,7 +69,7 @@ export const updateSchedule = async (req: Request, res: Response) => {
 export const deleteSchedule = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const deletedSchedule = await prismaClient.schedules.delete({
+  await prismaClient.schedules.delete({
     where: { id },
   });
 
