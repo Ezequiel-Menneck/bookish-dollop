@@ -33,3 +33,47 @@ export const addSchedule = async (req: Request, res: Response) => {
 
   return res.status(201).json(schedule);
 };
+
+export const getAllSchedules = async (req: Request, res: Response) => {
+  const allSchedueles = await prismaClient.schedules.findMany({
+    include: { service: true },
+  });
+
+  res.status(200).send(allSchedueles);
+};
+
+export const updateSchedule = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { client, gender, date, time }: CreateSchedule = req.body;
+  const { service_name, price }: ServiceTypes = req.body.service.create;
+
+  const newSchedule = await prismaClient.schedules.update({
+    where: { id },
+    data: {
+      client,
+      gender,
+      date,
+      time,
+      service: {
+        create: {
+          service_name,
+          price,
+        },
+      },
+    },
+  });
+
+  return res.status(200).json(newSchedule);
+};
+
+export const deleteSchedule = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  await prismaClient.schedules.delete({
+    where: { id },
+  });
+
+  return res.status(200).send({
+    message: 'Schedule deletada com sucesso',
+  });
+};
