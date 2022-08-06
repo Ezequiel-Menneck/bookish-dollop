@@ -3,7 +3,7 @@ import Joi from 'joi';
 const dateValidator = /^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$/;
 const timeValidator = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
-export const calendarValidator = Joi.object({
+const calendarValidator = Joi.object({
   client: Joi.string().max(30).required().messages({
     'string.base': 'O campo cliente precisa ser um texto (string)',
     'string.empty': 'O campo cliente não pode ser nulo',
@@ -37,7 +37,7 @@ export const calendarValidator = Joi.object({
     }),
   service: {
     create: {
-      service_name: Joi.string().required().messages({
+      serviceName: Joi.string().required().messages({
         'string.base': 'O campo nome do serviço precisa ser um texto (string)',
         'string.empty': 'O campo nome do serviço não pode ser nulo',
       }),
@@ -48,3 +48,5 @@ export const calendarValidator = Joi.object({
   .with('client', 'gender')
   .with('date', 'time')
   .with('service_name', 'price');
+
+export default calendarValidator;

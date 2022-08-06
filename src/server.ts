@@ -1,7 +1,7 @@
 import express from 'express';
+import cors from 'cors';
 import UserRoute from './routes/UserRoute';
 import CalendarRoute from './routes/CalendarRoute';
-import cors from 'cors';
 
 const app = express();
 

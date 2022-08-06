@@ -10,9 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id    String @id @default(uuid())
+  name  String
+  email String @unique
+  // password String @
+}
+
 model Schedules {
   id      String     @id @default(uuid())
-  client  String
+  client  String     @db.VarChar(30)
   gender  String
   date    String
   time    String
@@ -20,9 +27,9 @@ model Schedules {
 }
 
 model Services {
-  id           String     @id @default(uuid())
-  service_name String
-  price        Float
-  schedules    Schedules? @relation(fields: [schedulesId], references: [id])
-  schedulesId  String?
+  id          String     @id @default(uuid())
+  serviceName String
+  price       Float
+  schedules   Schedules? @relation(fields: [schedulesId], references: [id])
+  schedulesId String?
 }

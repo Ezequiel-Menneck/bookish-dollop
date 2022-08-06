@@ -6,9 +6,10 @@
     "extends": [
       "airbnb-base",
       "plugin:@typescript-eslint/recommended",
-      "prettier/@typescript-eslint",
-      "plugin:prettier/recommended"
+      "prettier"
+      
     ],
+    
     "globals": {
       "Atomics": "readonly",
       "SharedArrayBuffer": "readonly"
@@ -23,6 +24,9 @@
       "prettier"
     ],
     "rules": {
+      "@typescript-eslint/ban-ts-ignore": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
       "prettier/prettier": "error",
       "import/extensions": [
         "error",
