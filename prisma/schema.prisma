@@ -11,10 +11,11 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(uuid())
-  name  String
-  email String @unique
-  // password String @
+  id            String  @id @default(uuid())
+  name          String
+  email         String  @unique
+  password      String
+  activeAccount Boolean @default(true) @map("active_account")
 }
 
 model Schedules {
@@ -28,7 +29,7 @@ model Schedules {
 
 model Services {
   id          String     @id @default(uuid())
-  serviceName String
+  serviceName String     @map("service_name")
   price       Float
   schedules   Schedules? @relation(fields: [schedulesId], references: [id])
   schedulesId String?
