@@ -32,11 +32,9 @@ export const getAllUsers = (req: Request, res: Response) => {
 export const getUserById = (req: Request, res: Response) => {
   const userId: string = req.params.id;
 
-  const user = users.find(user => {
-    return user.id === userId;
-  });
+  const selectedUser = users.find(user => user.id === userId);
 
-  res.send(user);
+  res.send(selectedUser);
 };
 
 export const addUser = (req: Request, res: Response) => {
@@ -54,9 +52,7 @@ export const addUser = (req: Request, res: Response) => {
 export const deleteUser = (req: Request, res: Response) => {
   const userId: string = req.params.id;
 
-  users = users.filter(user => {
-    return user.id !== userId;
-  });
+  users = users.filter(user => user.id !== userId);
 
   res.json(users);
 };

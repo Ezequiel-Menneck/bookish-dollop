@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { prismaClient } from '../database/prismaCliente';
-import { calendarValidator } from '../validators/CallendarValidator';
+import prismaClient from '../database/prismaCliente';
+import calendarValidator from '../validators/CallendarValidator';
 
 type CreateSchedule = {
   client: string;
@@ -10,19 +10,18 @@ type CreateSchedule = {
 };
 
 type ServiceTypes = {
-  service_name: string;
+  serviceName: string;
   price: number;
 };
 
 export const addSchedule = async (req: Request, res: Response) => {
   const { client, gender, date, time }: CreateSchedule = req.body;
-  const { service_name, price }: ServiceTypes = req.body.service.create;
+  const { serviceName, price }: ServiceTypes = req.body.service.create;
 
   const { error } = calendarValidator.validate(req.body);
   const valid = error == null;
 
   if (valid) {
-    console.log('Valido');
     const schedule = await prismaClient.schedules.create({
       data: {
         client,
@@ -31,7 +30,7 @@ export const addSchedule = async (req: Request, res: Response) => {
         time,
         service: {
           create: {
-            service_name,
+            serviceName,
             price,
           },
         },
@@ -40,14 +39,12 @@ export const addSchedule = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json(schedule);
-  } else {
-    console.log('Invalido');
-    const { details } = error;
-    //@ts-ignore
-    const message = details.map(i => i.message).join(',');
-
-    return res.status(422).json({ error: message });
   }
+  const { details } = error;
+  // @ts-ignore
+  const message = details.map(i => i.message).join(',');
+
+  return res.status(422).json({ error: message });
 };
 
 export const getAllSchedules = async (req: Request, res: Response) => {
@@ -55,13 +52,13 @@ export const getAllSchedules = async (req: Request, res: Response) => {
     include: { service: true },
   });
 
-  res.status(200).send(allSchedueles);
+  res.status(200).json(allSchedueles).send('oiiii');
 };
 
 export const updateSchedule = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { client, gender, date, time }: CreateSchedule = req.body;
-  const { service_name, price }: ServiceTypes = req.body.service.create;
+  const { serviceName, price }: ServiceTypes = req.body.service.create;
 
   const { error } = calendarValidator.validate(req.body);
   const valid = error == null;
@@ -76,7 +73,7 @@ export const updateSchedule = async (req: Request, res: Response) => {
         time,
         service: {
           create: {
-            service_name,
+            serviceName,
             price,
           },
         },
@@ -84,14 +81,12 @@ export const updateSchedule = async (req: Request, res: Response) => {
     });
 
     return res.status(200).json(newSchedule);
-  } else {
-    console.log('Invalido');
-    const { details } = error;
-    //@ts-ignore
-    const message = details.map(i => i.message).join(',');
-
-    return res.status(422).json({ error: message });
   }
+  const { details } = error;
+  // @ts-ignore
+  const message = details.map(i => i.message).join(',');
+
+  return res.status(422).json({ error: message });
 };
 
 export const deleteSchedule = async (req: Request, res: Response) => {
