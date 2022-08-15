@@ -1,77 +1,63 @@
 import { Request, Response } from 'express';
-import { v4 as uuidV4 } from 'uuid';
+import prismaClient from '../database/prismaCliente';
+import descryptPassword from '../utils/descrypt';
+import encryptPassword from '../utils/encrypt';
 
 type User = {
   name: string;
-  age: number;
-  id: string;
+  email: string;
+  password: string;
+  activeAccount: boolean;
 };
 
-let users: User[] = [
-  {
-    name: 'Rbson',
-    age: 10,
-    id: uuidV4(),
-  },
-  {
-    name: 'Isa',
-    age: 10,
-    id: uuidV4(),
-  },
-  {
-    name: 'Isa',
-    age: 10,
-    id: uuidV4(),
-  },
-];
+export const addUser = async (req: Request, res: Response) => {
+  const { name, email, password, activeAccount }: User = req.body;
+  const ecryptedPass = await encryptPassword(password);
 
-export const getAllUsers = (req: Request, res: Response) => {
-  res.json(users);
-};
-
-export const getUserById = (req: Request, res: Response) => {
-  const userId: string = req.params.id;
-
-  const selectedUser = users.find(user => user.id === userId);
-
-  res.send(selectedUser);
-};
-
-export const addUser = (req: Request, res: Response) => {
-  const { name, age } = req.body;
-
-  users.push({
-    name,
-    age,
-    id: uuidV4(),
+  const newUser = await prismaClient.user.create({
+    data: {
+      name,
+      email,
+      password: ecryptedPass,
+      activeAccount,
+    },
   });
 
-  res.json(users);
+  res.status(201).json(newUser);
 };
 
-export const deleteUser = (req: Request, res: Response) => {
-  const userId: string = req.params.id;
-
-  users = users.filter(user => user.id !== userId);
-
-  res.json(users);
-};
-
-export const updateUser = (req: Request, res: Response) => {
-  const userId: string = req.params.id;
-  const { name, age } = req.body;
-
-  users = users.map(user => {
-    if (user.id === userId) {
-      return {
-        name,
-        age,
-        id: user.id,
-      };
-    }
-
-    return user;
+export const findUser = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const findedUser = await prismaClient.user.findUnique({
+    where: { email },
   });
 
-  res.json(users);
+  res.status(200).json(findedUser);
+};
+
+export const authUser = async (req: Request, res: Response) => {
+  const { password, email } = req.body;
+
+  const user = await prismaClient.user.findUnique({
+    where: { email },
+  });
+
+  if (!user)
+    return res.status(401).json({ message: 'Usuário ou senha incorreta' });
+  if (!user?.activeAccount)
+    return res.status(401).json({ message: 'Usuário desativado' });
+
+  const validatePassword = await descryptPassword(password, user?.password);
+
+  if (!validatePassword) {
+    return res.status(401).json({ message: 'Senha incorreta' });
+  }
+
+  // const token = await generateToken(user);
+
+  return res.status(200).json({
+    message: 'Usuário autenticado',
+    user,
+    // token,
+  });
 };
