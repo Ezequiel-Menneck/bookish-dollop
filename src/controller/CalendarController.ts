@@ -52,7 +52,7 @@ export const getAllSchedules = async (req: Request, res: Response) => {
     include: { service: true },
   });
 
-  res.status(200).json(allSchedueles).send('oiiii');
+  res.status(200).json(allSchedueles);
 };
 
 export const updateSchedule = async (req: Request, res: Response) => {
